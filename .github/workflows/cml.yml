@@ -1,38 +1,26 @@
-# This is a basic workflow to help you get started with Actions
-
 name: train-my-model
 
-# Controls when the workflow will run
 on: [push]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  train:
-    # The type of runner that the job will run on
+  run:
     runs-on: [ubuntu-latest]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
 
-      = uses: iterative/setup-cml@v1
+      - uses: iterative/setup-cml@v1
 
       - uses: actions/setup-python@v2
         with:
-          python-version:'3.6'
+          python-version: '3.6'
 
-      # Runs a single command using the runners shell
-      - name: CML
+      - name: cml
         env:
-          repo_token = ${{ secrets.GITHUB_TOKEN }}
-          TB_CREDENTIALS = ${{ secrets.TB_CREDENTIALS}}
-        run:
-          pip install requirements.txt
-          cml-tensorboard-dev --logdir logs --md --name "Go to Tensorboard" >> report.md
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          TB_CREDENTIALS: ${{ secrets.TB_CREDENTIALS }}
+        run: |
+          pip install -r requirements.txt
+          cml-tensorboard-dev --logdir logs --md --name "Go to tensorboard" >> report.md
           cml-send-comment report.md
           python train.py
-
-          # cat metrics.txt >> report.md
-          # cml-publish confusion_matrix.png --md --title 'confusion-matrix' >> report.md
-          # cml-send-comment report.md
