@@ -5,13 +5,8 @@ name: Issue Response
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    branches: [ main ]
   issues:
     types: [opened]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -36,14 +31,14 @@ jobs:
                 body: issueBody
               })
     
-    - name: Add issue to project board
-      if: contains(github.event.issue.labels.*.name, 'bug')
-      uses: actions/github-script@0.8.0
-      with:
-        github-token: ${{secrets.GITHUB_TOKEN}}
-        script: |
-            github.projects.createCard({
-              column_id: 16425495,
-              content_id: context.payload.issue.id,
-              content_type: "Issue"
-            });
+      - name: Add issue to project board
+        if: contains(github.event.issue.labels.*.name, 'bug')
+        uses: actions/github-script@0.8.0
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+              github.projects.createCard({
+                column_id: 16425495,
+                content_id: context.payload.issue.id,
+                content_type: "Issue"
+              });
